@@ -151,7 +151,7 @@ function buildUIShell() {
 
   // Bottom Workflow Bar
   const footer = document.createElement('footer');
-  footer.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 p-2 rounded-full glass-card pointer-events-auto z-50 workflow-bar shadow-xl border border-slateink/5';
+  footer.className = 'fixed bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1 sm:gap-2 p-1.5 sm:p-2 rounded-2xl sm:rounded-full glass-card pointer-events-auto z-50 workflow-bar shadow-xl border border-slateink/5';
   
   Object.entries(STAGES).forEach(([num, stage]) => {
     const btn = document.createElement('button');
@@ -176,7 +176,7 @@ function buildUIShell() {
   // Main Content Container for Stages
   const stageContainer = document.createElement('main');
   stageContainer.id = 'stage-container';
-  stageContainer.className = 'fixed inset-0 pt-16 pb-24 px-6 pointer-events-none z-40 flex flex-col';
+  stageContainer.className = 'fixed inset-0 pt-16 pb-24 px-2 sm:px-6 pointer-events-none z-40 flex flex-col overflow-y-auto';
 
   uiLayer.appendChild(header);
   uiLayer.appendChild(stageContainer);

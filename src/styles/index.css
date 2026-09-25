@@ -664,43 +664,239 @@ body {
   100% { transform: scale(1); background: var(--accent-green); border-color: var(--accent-green); }
 }
 
-/* Mobile Responsive Overrides */
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile-first overrides
+   xs <480px  ·  sm <640px  ·  md <768px  ·  lg 768px+
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Root spacing ── */
 @media (max-width: 768px) {
   :root {
-    --space-xl: 2rem;
-    --gutter: 1rem;
-    --margin: 1.5rem;
-  }
-
-  .text-display-xl {
-    font-size: 2.75rem;
-  }
-
-  .text-headline-lg {
-    font-size: 2rem;
-  }
-
-  .workflow-bar {
-    width: 90%;
-    bottom: 1rem;
-    overflow-x: auto;
-    justify-content: flex-start;
-    -webkit-overflow-scrolling: touch;
-    padding: 0.5rem;
-  }
-  
-  .workflow-step {
-    white-space: nowrap;
-    padding: 0.375rem 0.75rem;
-  }
-
-  .booklet-leaf {
-    padding: 1.25rem;
-  }
-
-  .eval-lens-node {
-    width: 48px;
-    height: 48px;
-    font-size: 1.25rem;
+    --space-xl: 1.5rem;
+    --space-lg: 1.25rem;
+    --space-md: 0.75rem;
+    --gutter:   0.75rem;
+    --margin:   1rem;
   }
 }
+
+/* ── Typography scale-down ── */
+@media (max-width: 768px) {
+  .text-display-xl  { font-size: 2rem;   line-height: 1.15; }
+  .text-headline-lg { font-size: 1.6rem; line-height: 1.2;  }
+  .text-headline-md { font-size: 1.3rem; }
+  .text-headline-sm { font-size: 1.1rem; }
+  .text-body-lg     { font-size: 1rem;   }
+}
+@media (max-width: 480px) {
+  .text-display-xl  { font-size: 1.6rem; }
+  .text-headline-lg { font-size: 1.3rem; }
+}
+
+/* ── HEADER — compact on mobile ── */
+@media (max-width: 768px) {
+  header.fixed {
+    padding-left:  0.75rem !important;
+    padding-right: 0.75rem !important;
+    height: 52px !important;
+  }
+  header .font-serif.text-xl { font-size: 1rem !important; }
+  #header-role-hud {
+    padding: 0.2rem 0.5rem !important;
+    gap: 0.25rem !important;
+    max-width: 130px;
+  }
+  #role-hud-title { font-size: 0.6rem !important; letter-spacing: 0.04em !important; }
+  #role-hud-desc  { display: none !important; }
+  #header-institution-label { display: none !important; }
+  header .w-8.h-8 { width: 28px !important; height: 28px !important; }
+}
+@media (max-width: 380px) {
+  #header-role-hud { display: none !important; }
+}
+
+/* ── STAGE CONTAINER — reduced padding ── */
+@media (max-width: 768px) {
+  #stage-container {
+    padding-top:    52px   !important;
+    padding-bottom: 72px   !important;
+    padding-left:   0.5rem !important;
+    padding-right:  0.5rem !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  #stage-container .h-full {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+}
+@media (max-width: 480px) {
+  #stage-container {
+    padding-left:  0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+}
+
+/* ── WORKFLOW BAR — compact scrollable strip ── */
+@media (max-width: 768px) {
+  .workflow-bar {
+    width: calc(100% - 1.5rem) !important;
+    max-width: 100%;
+    bottom: 0.5rem !important;
+    border-radius: 1rem !important;
+    padding: 0.3rem 0.5rem !important;
+    gap: 0.2rem !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    justify-content: flex-start !important;
+  }
+  .workflow-bar::-webkit-scrollbar { display: none; }
+  .workflow-step {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    font-size: 0.6rem !important;
+    flex-shrink: 0;
+    padding: 0 !important;
+  }
+  /* Hide tooltips — no hover on touch */
+  .workflow-step > div:nth-child(2) { display: none !important; }
+}
+
+/* ── UPLOAD STAGE — single column ── */
+@media (max-width: 768px) {
+  #step-1-inst,
+  #step-2-upload {
+    max-width: 100% !important;
+    padding: 1.25rem 1rem !important;
+    border-radius: 1.25rem !important;
+    position: relative !important;
+  }
+  .upload-zones.grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.625rem !important;
+  }
+  .upload-item {
+    flex-direction: row !important;
+    padding: 0.75rem 1rem !important;
+    justify-content: flex-start !important;
+    gap: 0.75rem !important;
+    min-height: 60px !important;
+  }
+  .upload-item .icon-container { margin-bottom: 0 !important; }
+  .action-section { justify-content: stretch !important; }
+  .action-section button,
+  #init-pipeline-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.875rem 1rem !important;
+  }
+}
+
+/* ── PANELS & FLEX ROWS — stack vertically ── */
+@media (max-width: 768px) {
+  /* Examiner and other split-panel stages */
+  .w-full.h-full.flex.flex-col {
+    flex-direction: column !important;
+  }
+  /* Right panels (38% width on desktop) go full-width on mobile */
+  .glass-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 45vh;
+    overflow-y: auto;
+    border-left: none !important;
+    border-top: 1px solid rgba(30,36,43,0.1) !important;
+  }
+  /* Tables — horizontal scroll */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  /* Large paddings override */
+  .p-8  { padding: 1rem    !important; }
+  .p-10 { padding: 1.25rem !important; }
+  .p-12 { padding: 1.25rem !important; }
+  .px-8 { padding-left: 1rem   !important; padding-right: 1rem   !important; }
+  .px-6 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+  .py-8 { padding-top: 1rem    !important; padding-bottom: 1rem    !important; }
+}
+
+/* ── RESULT & ANALYTICS — cards responsive ── */
+@media (max-width: 768px) {
+  svg { max-width: 100%; }
+  .text-5xl, .text-6xl, .text-7xl {
+    font-size: 2.25rem !important;
+    line-height: 1.1 !important;
+  }
+  .grid.grid-cols-4,
+  .grid.grid-cols-5 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  .grid.grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  .grid.grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 480px) {
+  .grid.grid-cols-4,
+  .grid.grid-cols-5,
+  .grid.grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── BOOKLET & LENS ── */
+@media (max-width: 768px) {
+  .booklet-leaf { padding: 1rem !important; }
+  .eval-lens-node {
+    width:  44px  !important;
+    height: 44px  !important;
+    font-size: 1.1rem !important;
+  }
+}
+
+/* ── 3D CANVAS — dim on mobile so text stays legible ── */
+@media (max-width: 768px) {
+  #three-canvas-container {
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+  }
+}
+@media (max-width: 480px) {
+  #three-canvas-container { opacity: 0.15 !important; }
+}
+
+/* ── GENERAL touch targets & buttons ── */
+@media (max-width: 768px) {
+  button, a, [role="button"] { min-height: 36px; }
+  .badge {
+    font-size: 0.65rem !important;
+    padding: 0.2rem 0.5rem !important;
+  }
+  .btn {
+    padding: 0.625rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ── SCROLLABILITY — allow internal scroll ── */
+@media (max-width: 768px) {
+  .overflow-y-auto { -webkit-overflow-scrolling: touch; }
+  /* Prevent full-screen divs from killing layout */
+  .min-h-screen {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+}
+
