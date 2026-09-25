@@ -27,44 +27,45 @@ export function renderUploadStage(container, state) {
   ];
 
   container.innerHTML = `
-    <div class="min-h-screen w-full flex items-center justify-center p-6 bg-[#FAF8F5] text-[#1E242B] font-sans pointer-events-auto relative">
+    <div class="w-full h-full flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 bg-[#FAF8F5] text-[#1E242B] font-sans pointer-events-auto relative overflow-y-auto">
       
       <!-- Step 1: Institution Select -->
-      <div id="step-1-inst" class="glass-card max-w-md w-full bg-white/60 backdrop-blur-xl border border-[#1E242B]/10 rounded-3xl p-10 shadow-2xl flex flex-col gap-6 opacity-0 translate-y-8 absolute z-10">
-        <h2 class="text-2xl font-serif text-[#1E242B] text-center">Select Institution Type</h2>
-        <div class="flex flex-col gap-4 mt-2">
-          <button class="inst-btn py-4 px-6 rounded-xl border border-[#1E242B]/20 hover:bg-[#1E242B] hover:text-white transition-all text-left font-medium" data-type="CBSE">CBSE / Central Board</button>
-          <button class="inst-btn py-4 px-6 rounded-xl border border-[#1E242B]/20 hover:bg-[#1E242B] hover:text-white transition-all text-left font-medium" data-type="University">State University</button>
-          <button class="inst-btn py-4 px-6 rounded-xl border border-[#1E242B]/20 hover:bg-[#1E242B] hover:text-white transition-all text-left font-medium" data-type="Other">Other / Autonomous</button>
+      <div id="step-1-inst" class="glass-card max-w-md w-full bg-white/60 backdrop-blur-xl border border-[#1E242B]/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col gap-4 sm:gap-6 opacity-0 translate-y-8">
+        <h2 class="text-xl sm:text-2xl font-serif text-[#1E242B] text-center">Select Institution Type</h2>
+        <div class="flex flex-col gap-3 sm:gap-4 mt-1 sm:mt-2">
+          <button class="inst-btn py-3 sm:py-4 px-5 sm:px-6 rounded-xl border border-[#1E242B]/20 hover:bg-[#1E242B] hover:text-white transition-all text-left font-medium text-sm sm:text-base" data-type="CBSE">CBSE / Central Board</button>
+          <button class="inst-btn py-3 sm:py-4 px-5 sm:px-6 rounded-xl border border-[#1E242B]/20 hover:bg-[#1E242B] hover:text-white transition-all text-left font-medium text-sm sm:text-base" data-type="University">State University</button>
+          <button class="inst-btn py-3 sm:py-4 px-5 sm:px-6 rounded-xl border border-[#1E242B]/20 hover:bg-[#1E242B] hover:text-white transition-all text-left font-medium text-sm sm:text-base" data-type="Other">Other / Autonomous</button>
         </div>
       </div>
 
-      <!-- Step 2: Document Uploads -->
-      <div id="step-2-upload" class="glass-card upload-container max-w-4xl w-full bg-white/60 backdrop-blur-xl border border-[#1E242B]/10 rounded-3xl p-10 shadow-2xl flex flex-col gap-8 opacity-0 translate-y-8 absolute z-0 pointer-events-none invisible">
+      <!-- Step 2: Document Uploads (hidden initially) -->
+      <div id="step-2-upload" class="glass-card upload-container max-w-4xl w-full bg-white/60 backdrop-blur-xl border border-[#1E242B]/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl flex flex-col gap-5 sm:gap-8 opacity-0 translate-y-8 hidden pointer-events-none">
         
-        <div class="header-section flex flex-col items-center gap-2 border-b border-[#1E242B]/10 pb-6 text-center">
-          <h2 class="text-sm uppercase tracking-widest text-[#1E242B]/60 font-semibold font-mono" id="selected-inst-label">Institution</h2>
-          <h1 class="text-3xl font-serif text-[#1E242B]">Provide Assessment Documents</h1>
-          <p class="text-sm text-[#1E242B]/60 max-w-lg mt-2 mx-auto">Upload the blank question paper, marking scheme, and answer script bundle. Our AI will automatically extract the subject and assessment structure.</p>
+        <div class="header-section flex flex-col items-center gap-1 sm:gap-2 border-b border-[#1E242B]/10 pb-4 sm:pb-6 text-center">
+          <h2 class="text-xs sm:text-sm uppercase tracking-widest text-[#1E242B]/60 font-semibold font-mono" id="selected-inst-label">Institution</h2>
+          <h1 class="text-xl sm:text-3xl font-serif text-[#1E242B]">Provide Assessment Documents</h1>
+          <p class="text-xs sm:text-sm text-[#1E242B]/60 max-w-lg mt-1 sm:mt-2 mx-auto">Upload the blank question paper, marking scheme, and answer script bundle. AI will extract the assessment structure automatically.</p>
         </div>
 
-        <!-- Upload Zones -->
-        <div class="upload-zones grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Upload Zones: 1-col on mobile, 3-col on md+ -->
+        <div class="upload-zones grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6">
           ${uploadCategories.map((cat, index) => `
-            <div class="upload-item flex flex-col items-center justify-center p-6 border-2 border-dashed border-[#1E242B]/20 rounded-2xl bg-white/40 hover:bg-white/80 transition-colors duration-300 group cursor-pointer relative overflow-hidden" data-id="${cat.id}">
+            <div class="upload-item flex flex-row md:flex-col items-center justify-start md:justify-center p-4 sm:p-6 border-2 border-dashed border-[#1E242B]/20 rounded-xl sm:rounded-2xl bg-white/40 hover:bg-white/80 transition-colors duration-300 group cursor-pointer relative overflow-hidden gap-3 md:gap-0" data-id="${cat.id}">
               <input type="file" accept=".pdf" class="hidden file-input" ${cat.isArray ? 'multiple' : ''} />
               
-              <div class="icon-container w-12 h-12 rounded-full bg-[#1E242B]/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                <svg class="w-6 h-6 text-[#1E242B]/70 default-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+              <div class="icon-container w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1E242B]/5 flex items-center justify-center mb-0 md:mb-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#1E242B]/70 default-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                 <div class="spinner w-5 h-5 border-2 border-[#1E242B]/30 border-t-[#1E242B] rounded-full animate-spin hidden"></div>
-                <svg class="w-6 h-6 hidden success-icon text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 hidden success-icon text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
               </div>
               
-              <span class="text-sm font-medium text-center title-text">${cat.title}</span>
-              
-              <div class="details-text text-xs text-[#1E242B]/60 mt-2 text-center hidden flex-col items-center gap-1 w-full z-10">
-                <span class="file-name truncate w-full font-mono"></span>
-                <span class="file-meta"></span>
+              <div class="flex flex-col flex-1 md:items-center">
+                <span class="text-sm font-medium md:text-center title-text">${cat.title}</span>
+                <div class="details-text text-xs text-[#1E242B]/60 mt-1 hidden flex-col items-start md:items-center gap-1 w-full z-10">
+                  <span class="file-name truncate w-full font-mono"></span>
+                  <span class="file-meta"></span>
+                </div>
               </div>
               
               <div class="progress-bar absolute bottom-0 left-0 h-1 bg-[#1E242B] w-0"></div>
@@ -72,9 +73,9 @@ export function renderUploadStage(container, state) {
           `).join('')}
         </div>
 
-        <!-- Action Button -->
-        <div class="action-section flex justify-end mt-4">
-          <button id="init-pipeline-btn" disabled class="px-8 py-4 bg-[#1E242B] text-[#FAF8F5] rounded-xl font-medium tracking-wide hover:bg-[#1E242B]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center gap-3">
+        <!-- Action Button: full-width on mobile -->
+        <div class="action-section flex justify-end sm:justify-end mt-2 sm:mt-4">
+          <button id="init-pipeline-btn" disabled class="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-[#1E242B] text-[#FAF8F5] rounded-xl font-medium tracking-wide hover:bg-[#1E242B]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3 text-sm sm:text-base">
             <span class="btn-text">Initialize Assessment Pipeline</span>
             <svg class="w-5 h-5 hidden btn-success-icon text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             <div class="btn-spinner w-5 h-5 border-2 border-[#FAF8F5]/30 border-t-[#FAF8F5] rounded-full animate-spin hidden"></div>
@@ -107,7 +108,9 @@ export function renderUploadStage(container, state) {
       gsap.to(step1, {
         opacity: 0, y: -20, duration: 0.4, onComplete: () => {
           step1.classList.add('hidden');
-          step2.classList.remove('invisible', 'pointer-events-none');
+          step2.classList.remove('hidden', 'pointer-events-none');
+          step2.style.opacity = '0';
+          step2.style.transform = 'translateY(20px)';
           
           const tl2 = gsap.timeline();
           tl2.to(step2, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' })

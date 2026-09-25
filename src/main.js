@@ -120,7 +120,7 @@ function buildUIShell() {
 
   // Header Chrome
   const header = document.createElement('header');
-  header.className = 'fixed top-0 left-0 w-full h-16 flex items-center justify-between px-6 pointer-events-auto z-50 glass-panel border-b border-slateink/5';
+  header.className = 'fixed top-0 left-0 w-full h-14 sm:h-16 flex items-center justify-between px-3 sm:px-6 pointer-events-auto z-50 glass-panel border-b border-slateink/5';
   header.innerHTML = `
     <div class="flex items-center gap-4">
       <div class="w-8 h-8 rounded-full bg-slateink flex items-center justify-center text-ivory font-serif font-bold text-xl">A+</div>
@@ -155,7 +155,7 @@ function buildUIShell() {
   
   Object.entries(STAGES).forEach(([num, stage]) => {
     const btn = document.createElement('button');
-    btn.className = `workflow-step relative w-10 h-10 rounded-full flex items-center justify-center font-mono text-sm transition-all duration-300`;
+    btn.className = `workflow-step relative w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-mono text-xs sm:text-sm transition-all duration-300`;
     btn.dataset.stage = num;
     btn.innerHTML = `<div>0${num}</div>`;
     btn.title = stage.name;
@@ -176,7 +176,7 @@ function buildUIShell() {
   // Main Content Container for Stages
   const stageContainer = document.createElement('main');
   stageContainer.id = 'stage-container';
-  stageContainer.className = 'fixed inset-0 pt-16 pb-24 px-2 sm:px-6 pointer-events-none z-40 flex flex-col overflow-y-auto';
+  stageContainer.className = 'fixed inset-0 pt-14 sm:pt-16 pb-20 sm:pb-24 px-2 sm:px-6 pointer-events-none z-40 flex flex-col overflow-y-auto';
 
   uiLayer.appendChild(header);
   uiLayer.appendChild(stageContainer);
@@ -196,15 +196,15 @@ function setStage(stageNum) {
     const num = parseInt(btn.dataset.stage);
     const div = btn.querySelector('div:first-child');
     if (num === stageNum) {
-      btn.className = 'workflow-step relative w-10 h-10 rounded-full flex items-center justify-center font-mono text-sm transition-all duration-300 bg-slateink text-ivory scale-110 shadow-lg';
+      btn.className = 'workflow-step relative w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-mono text-xs sm:text-sm transition-all duration-300 bg-slateink text-ivory scale-110 shadow-lg';
       div.innerHTML = `0${num}`;
     } else if (num < stageNum) {
       // Completed
-      btn.className = 'workflow-step relative w-10 h-10 rounded-full flex items-center justify-center font-mono text-sm transition-all duration-300 bg-accent-teal/10 text-accent-teal hover:bg-accent-teal/20';
-      div.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      btn.className = 'workflow-step relative w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-mono text-xs sm:text-sm transition-all duration-300 bg-accent-teal/10 text-accent-teal hover:bg-accent-teal/20';
+      div.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
     } else {
       // Pending
-      btn.className = 'workflow-step relative w-10 h-10 rounded-full flex items-center justify-center font-mono text-sm transition-all duration-300 bg-transparent text-slateink/50 hover:bg-slateink/10 hover:text-slateink';
+      btn.className = 'workflow-step relative w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-mono text-xs sm:text-sm transition-all duration-300 bg-transparent text-slateink/50 hover:bg-slateink/10 hover:text-slateink';
     }
   });
 
