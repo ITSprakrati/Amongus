@@ -247,5 +247,4 @@ python run_exhaustive_qa_suite.py
 
 ---
 
-## ⚖️ License
-MIT License. Built for advanced AI-assisted academic examination evaluation.
+
