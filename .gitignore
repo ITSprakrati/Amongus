@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+.lite-venv/
+.venv/
+venv/
+
+# Production build
+dist/
+
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+backend/model_dev.joblib
+
+# Environment variables & secrets (CRITICAL: NEVER COMMIT KEYS)
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+
+# Local SQLite databases & uploads
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+backend/evalos.db*
+backend/data/
+/data/
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

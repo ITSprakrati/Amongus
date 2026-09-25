@@ -1,0 +1,11 @@
+# Render Blueprint: one free web service running the lite image (see DEPLOY_FREE.md).
+services:
+  - type: web
+    name: evalos
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "10000"

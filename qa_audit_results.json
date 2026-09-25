@@ -1,0 +1,254 @@
+[
+  {
+    "id": "START-01",
+    "category": "Startup",
+    "description": "Backend /health check",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "{'status': 'healthy', 'service': 'EvalOS API', 'db_ready': True}",
+    "notes": ""
+  },
+  {
+    "id": "START-02",
+    "category": "Startup",
+    "description": "Frontend Vite server response",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "HTTP 200",
+    "notes": ""
+  },
+  {
+    "id": "SEC-SQLI-1",
+    "category": "Security",
+    "description": "SQL Injection probe: ' OR '1'='1",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Status: 422",
+    "notes": ""
+  },
+  {
+    "id": "SEC-SQLI-2",
+    "category": "Security",
+    "description": "SQL Injection probe: '; DROP TABLE users;",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Status: 422",
+    "notes": ""
+  },
+  {
+    "id": "SEC-SQLI-3",
+    "category": "Security",
+    "description": "SQL Injection probe: admin' --",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Status: 422",
+    "notes": ""
+  },
+  {
+    "id": "SEC-SQLI-4",
+    "category": "Security",
+    "description": "SQL Injection probe: 1 UNION SELECT 1, 'a",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Status: 422",
+    "notes": ""
+  },
+  {
+    "id": "SEC-XSS-01",
+    "category": "Security",
+    "description": "XSS payload in Assessment Title",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "Status: 400",
+    "notes": ""
+  },
+  {
+    "id": "SEC-TRAV-01",
+    "category": "Security",
+    "description": "Path Traversal in Job ID parameter",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Status: 404",
+    "notes": ""
+  },
+  {
+    "id": "API-OVERSIZE-01",
+    "category": "API Fuzzing",
+    "description": "100KB payload submission",
+    "status": "PASS",
+    "severity": "P2",
+    "evidence": "Status: 200",
+    "notes": ""
+  },
+  {
+    "id": "API-VALID-01",
+    "category": "API Fuzzing",
+    "description": "Empty body validation on /session/mark",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "HTTP 422 Validation Error",
+    "notes": ""
+  },
+  {
+    "id": "API-TYPE-01",
+    "category": "API Fuzzing",
+    "description": "String passed for integer mark field",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "HTTP 422",
+    "notes": ""
+  },
+  {
+    "id": "UPL-EMPTY-01",
+    "category": "File Upload",
+    "description": "Upload 0-byte PDF",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "Status: 200",
+    "notes": ""
+  },
+  {
+    "id": "UPL-CORRUPT-01",
+    "category": "File Upload",
+    "description": "Upload corrupt non-PDF file",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "Status: 200",
+    "notes": ""
+  },
+  {
+    "id": "UPL-EXT-01",
+    "category": "File Upload",
+    "description": "Upload disallowed shell script",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Status: 400",
+    "notes": ""
+  },
+  {
+    "id": "AI-NORM-01",
+    "category": "AI/LLM",
+    "description": "Normal mark suggestion",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "Mark: 4/5, Conf: 0.96, Method: Academic Rubric Engine (Verified Grounding)",
+    "notes": ""
+  },
+  {
+    "id": "AI-INJECT-01",
+    "category": "AI Security",
+    "description": "Prompt injection defense in student answer",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Protected. Awarded 2/5. Reasoning: Brief attempt for What is the capital of France?. Identifies central terminology but lacks contextua",
+    "notes": ""
+  },
+  {
+    "id": "AI-GROUND-01",
+    "category": "AI Grounding",
+    "description": "Hallucination resistance on blank/unknown answer",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "Score: 0/5 as expected",
+    "notes": ""
+  },
+  {
+    "id": "AI-NAR-01",
+    "category": "AI/LLM",
+    "description": "Executive Narrative Generation",
+    "status": "PASS",
+    "severity": "P2",
+    "evidence": "The candidate achieved 42 out of 50 marks (84%), earning a grade of A. Performance was categorised as HIGH MATCH relativ",
+    "notes": ""
+  },
+  {
+    "id": "RACE-01",
+    "category": "Concurrency",
+    "description": "10 Concurrent mark submissions",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "All 10 completed cleanly",
+    "notes": ""
+  },
+  {
+    "id": "E2E-01",
+    "category": "E2E Journey",
+    "description": "Step 1: Ingest/Fetch Assessment",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Found assessment 04 Marking Scheme Class10 English (1)",
+    "notes": ""
+  },
+  {
+    "id": "E2E-02",
+    "category": "E2E Journey",
+    "description": "Step 2: Examiner Grading & Ledger Recording",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Eval ID: a42399b3-c0bd-4fa3-87be-981e679df094, Score: 12",
+    "notes": ""
+  },
+  {
+    "id": "E2E-03",
+    "category": "E2E Journey",
+    "description": "Step 3: Integrity Engine Verification",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "{'status': 'VERIFIED', 'signals': [], 'case_id': None}",
+    "notes": ""
+  },
+  {
+    "id": "E2E-04",
+    "category": "E2E Journey",
+    "description": "Step 4: Result Publication & Certification",
+    "status": "PASS",
+    "severity": "P0",
+    "evidence": "Grade: FAIL, Total: 12/80",
+    "notes": ""
+  },
+  {
+    "id": "E2E-05",
+    "category": "E2E Journey",
+    "description": "Step 5: Institutional Analytics & Learning",
+    "status": "PASS",
+    "severity": "P1",
+    "evidence": "HTTP 200",
+    "notes": ""
+  },
+  {
+    "id": "PERF-dashboard",
+    "category": "Performance",
+    "description": "Avg Latency for http://127.0.0.1:8000/api/v1/analytics/dashboard",
+    "status": "PASS",
+    "severity": "P2",
+    "evidence": "23.13 ms",
+    "notes": ""
+  },
+  {
+    "id": "PERF-latest",
+    "category": "Performance",
+    "description": "Avg Latency for http://127.0.0.1:8000/api/v1/assessments/latest",
+    "status": "PASS",
+    "severity": "P2",
+    "evidence": "15.85 ms",
+    "notes": ""
+  },
+  {
+    "id": "PERF-health",
+    "category": "Performance",
+    "description": "Avg Latency for http://127.0.0.1:8000/health",
+    "status": "PASS",
+    "severity": "P2",
+    "evidence": "13.87 ms",
+    "notes": ""
+  },
+  {
+    "id": "PERF-localhost:3000",
+    "category": "Performance",
+    "description": "Avg Latency for http://localhost:3000",
+    "status": "PASS",
+    "severity": "P2",
+    "evidence": "33.29 ms",
+    "notes": ""
+  }
+]

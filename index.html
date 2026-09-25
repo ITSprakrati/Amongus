@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvalOS Prototype</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ivory: 'var(--ivory)',
+                        slateink: 'var(--slate-ink)',
+                        'slate-ink': 'var(--slate-ink)',
+                        'warm-ivory': 'var(--ivory-dark)',
+                        'warm-sand': 'var(--warm-sand)',
+                        'accent-teal': 'var(--accent-teal)',
+                        'accent-gold': 'var(--accent-gold)',
+                        'accent-orange': 'var(--accent-orange)',
+                        'accent-coral': 'var(--accent-coral)',
+                        'accent-green': 'var(--accent-green)',
+                        'accent-blue': 'var(--accent-blue)',
+                        'accent-crimson': 'var(--accent-crimson)',
+                        'surface-glass': 'var(--surface-glass)',
+                        'surface-container': 'var(--surface-container)',
+                        'surface-base': 'var(--surface-base)'
+                    },
+                    fontFamily: {
+                        serif: ['Newsreader', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/src/styles/index.css">
+</head>
+<body class="bg-ivory text-slate-ink font-sans overflow-hidden antialiased">
+    <!-- 3D Background Layer -->
+    <div id="three-canvas-container" class="fixed inset-0 z-0"></div>
+
+    <!-- 2D UI Layer (Dynamic) -->
+    <div id="ui-layer" class="fixed inset-0 z-10 pointer-events-none"></div>
+
+    <!-- Guided Demo Overlay -->
+    <div id="guided-demo-overlay" class="fixed inset-0 z-20 pointer-events-none"></div>
+
+    <!-- Main Entry Point -->
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
