@@ -1,5 +1,10 @@
-import boto3
-from botocore.exceptions import ClientError
+try:
+    import boto3
+    from botocore.exceptions import ClientError as _ClientError
+    ClientError = _ClientError
+except ImportError:
+    boto3 = None  # type: ignore
+    ClientError = Exception  # type: ignore — StorageService unused in lite mode
 from core.config import get_settings
 import logging
 from io import BytesIO

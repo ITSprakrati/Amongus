@@ -1,18 +1,30 @@
+# ── Core API framework ───────────────────────────────────────────────────────
 fastapi==0.104.1
-uvicorn==0.24.0
-sqlalchemy==2.0.23
-psycopg2-binary==2.9.9
-pgvector==0.2.4
-celery==5.3.6
-redis==5.0.1
-boto3==1.33.2
+uvicorn[standard]==0.24.0
 python-multipart==0.0.6
+
+# ── Database (SQLite in lite mode, Postgres via DATABASE_URL in prod) ────────
+sqlalchemy==2.0.23
+alembic==1.13.0
+
+# ── Settings & config ────────────────────────────────────────────────────────
 pydantic==2.5.2
 pydantic-settings==2.1.0
-alembic==1.13.0
-scikit-learn
-joblib
-numpy
+python-dotenv==1.0.0
+
+# ── Document processing (OCR / PDF) ─────────────────────────────────────────
 PyMuPDF
 Pillow
 pytesseract
+
+# ── ML / Analytics ───────────────────────────────────────────────────────────
+scikit-learn
+joblib
+numpy
+
+# ── AI / LLM (optional — app falls back to heuristics if keys absent) ────────
+openai>=1.0.0
+groq>=0.4.0
+
+# ── Async file helpers ────────────────────────────────────────────────────────
+aiofiles>=23.0.0

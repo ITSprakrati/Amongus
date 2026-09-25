@@ -5,8 +5,24 @@ import sys
 # the process's working directory / PYTHONPATH.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from celery import Celery
-from kombu import Queue
+try:
+    from celery import Celery
+    from kombu import Queue
+    _CELERY_AVAILABLE = True
+except ImportError:
+    _CELERY_AVAILABLE = False
+    Queue = None  # type: ignore
+
+    class Celery:  # type: ignore — minimal stub for lite mode
+        """Stub so `celery_app = Celery(...)` doesn't crash when celery isn't installed."""
+        def __init__(self, *a, **kw):
+            self.conf = type("conf", (), {"task_routes": {}, "task_queues": (), "task_always_eager": True, "task_eager_propagates": False, "update": lambda *a, **kw: None})()
+        def task(self, *a, **kw):
+            def decorator(fn):
+                return fn
+            return decorator
+        def autodiscover_tasks(self, *a, **kw):
+            pass
 from core.config import get_settings
 import logging
 
@@ -25,11 +41,12 @@ celery_app.conf.task_routes = {
 }
 # Declare every routed queue so a worker started WITHOUT `-Q` (as docker-compose does)
 # consumes them; otherwise tasks routed to `document_processing` are never picked up.
-celery_app.conf.task_queues = (
-    Queue("celery"),
-    Queue("document_processing"),
-    Queue("ml_tasks"),
-)
+if _CELERY_AVAILABLE and Queue is not None:
+    celery_app.conf.task_queues = (
+        Queue("celery"),
+        Queue("document_processing"),
+        Queue("ml_tasks"),
+    )
 
 # Free/"lite" single-process mode: run tasks inline (no Redis / worker needed).
 if settings.EVALOS_LITE:

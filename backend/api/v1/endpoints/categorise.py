@@ -8,7 +8,12 @@ from models import ProcessingJob
 router = APIRouter()
 import os
 import json
-from openai import OpenAI
+try:
+    from openai import OpenAI as _OpenAI
+    def OpenAI(**kwargs):  # thin shim so rest of file doesn't change
+        return _OpenAI(**kwargs)
+except ImportError:
+    OpenAI = None  # type: ignore
 
 from core.config import get_settings
 
@@ -42,6 +47,9 @@ def _categorise_with_llm(result_data: dict) -> dict:
     api_key = settings.OPENAI_API_KEY
     if not api_key:
         return _old_categorise(result_data) # Fallback if no key
+
+    if OpenAI is None:
+        return _old_categorise(result_data)
 
     try:
         client = OpenAI(api_key=api_key)
