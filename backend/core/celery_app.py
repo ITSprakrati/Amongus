@@ -13,14 +13,47 @@ except ImportError:
     _CELERY_AVAILABLE = False
     Queue = None  # type: ignore
 
+    class _EagerTask:
+        """Wraps a function so task.delay(*args) calls it synchronously (lite mode)."""
+        def __init__(self, fn):
+            self._fn = fn
+            self.__name__ = getattr(fn, "__name__", "task")
+            self.__doc__ = getattr(fn, "__doc__", "")
+
+        def __call__(self, *args, **kwargs):
+            return self._fn(*args, **kwargs)
+
+        def delay(self, *args, **kwargs):
+            """Eager execution: run inline instead of queuing to Redis."""
+            try:
+                return self._fn(*args, **kwargs)
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).error(
+                    f"Eager task {self.__name__} failed: {e}"
+                )
+                raise
+
+        def apply_async(self, args=None, kwargs=None, **opts):
+            return self.delay(*(args or []), **(kwargs or {}))
+
     class Celery:  # type: ignore — minimal stub for lite mode
         """Stub so `celery_app = Celery(...)` doesn't crash when celery isn't installed."""
         def __init__(self, *a, **kw):
-            self.conf = type("conf", (), {"task_routes": {}, "task_queues": (), "task_always_eager": True, "task_eager_propagates": False, "update": lambda *a, **kw: None})()
+            self.conf = type(
+                "conf", (),
+                {
+                    "task_routes": {}, "task_queues": (),
+                    "task_always_eager": True, "task_eager_propagates": False,
+                    "update": lambda *a, **kw: None
+                }
+            )()
+
         def task(self, *a, **kw):
             def decorator(fn):
-                return fn
+                return _EagerTask(fn)
             return decorator
+
         def autodiscover_tasks(self, *a, **kw):
             pass
 from core.config import get_settings
