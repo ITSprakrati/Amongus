@@ -259,7 +259,24 @@ async function renderRealExaminer(container, state) {
 
   const autoGenCheckedBtn = uploadContainer.querySelector('#auto-generate-checked-btn');
   if (autoGenCheckedBtn) {
-    autoGenCheckedBtn.addEventListener('click', () => {
+    autoGenCheckedBtn.addEventListener('click', async () => {
+      const btn = autoGenCheckedBtn;
+      btn.disabled = true;
+      btn.innerHTML = `<svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> GENERATING...`;
+
+      // Auto-fill any unmarked questions with 4/5 or 5/5 by actually clicking them (triggers API)
+      for (const q of questions) {
+        if (session.marks[q.id] === undefined) {
+          const markVal = Math.max(q.max_marks - 1, 1);
+          const targetBtn = rightPanel.querySelector(`.mark-btn[data-question="${q.id}"][data-mark="${markVal}"]`);
+          if (targetBtn) {
+            // Click sequentially to avoid race conditions creating the Evaluation
+            targetBtn.click();
+            await new Promise(r => setTimeout(r, 150));
+          }
+        }
+      }
+
       fileUploaded = true;
       const statusEl = uploadContainer.querySelector('#checked-copy-status');
       const badgeEl = uploadContainer.querySelector('#checked-copy-badge');
@@ -269,29 +286,21 @@ async function renderRealExaminer(container, state) {
         badgeEl.className = 'text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800';
       }
 
-      // Auto-fill any unmarked questions with 4/5 or 5/5
-      questions.forEach(q => {
-        if (session.marks[q.id] === undefined) {
-          const markVal = Math.max(q.max_marks - 1, 1);
-          session.marks[q.id] = markVal;
-          const targetBtn = rightPanel.querySelector(`.mark-btn[data-question="${q.id}"][data-mark="${markVal}"]`);
-          if (targetBtn) {
-            targetBtn.setAttribute('data-selected', 'true');
-            targetBtn.classList.add('bg-ink', 'text-ivory', 'border-ink');
-          }
-        }
-      });
-
       const autoTotal = computedTotal();
       if (recordedTotalInput) {
         recordedTotalInput.value = autoTotal;
+        // Wait for recorded total to save before enabling submit
         recordedTotalInput.dispatchEvent(new Event('change'));
+        await new Promise(r => setTimeout(r, 250));
       }
       totalMarkEl.textContent = autoTotal;
 
       updateSubmitState();
       submitBtn.disabled = false;
       submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      
+      btn.innerHTML = `✨ AUTO-GENERATED & UPLOADED`;
+      btn.classList.add('bg-emerald-100', 'text-emerald-700', 'border-emerald-200');
     });
   }
 
