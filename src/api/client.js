@@ -68,29 +68,29 @@ export const apiClient = {
   },
 
   // Real per-question mark entry, upserted against a real Evaluation row.
-  async submitQuestionMark(assessmentId, questionId, score) {
+  async submitQuestionMark(assessmentId, questionId, score, scriptId = "SESSION-CANDIDATE") {
     const response = await fetch(`${API_BASE_URL}/evaluation/session/mark`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ assessment_id: assessmentId, question_id: questionId, score })
+      body: JSON.stringify({ assessment_id: assessmentId, question_id: questionId, score, script_id: scriptId })
     });
     return response.json();
   },
 
   // Real examiner-entered ledger total, compared server-side against the
   // computed sum of persisted question marks during verification.
-  async submitRecordedTotal(assessmentId, recordedTotal) {
+  async submitRecordedTotal(assessmentId, recordedTotal, scriptId = "SESSION-CANDIDATE") {
     const response = await fetch(`${API_BASE_URL}/evaluation/session/recorded-total`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ assessment_id: assessmentId, recorded_total: recordedTotal })
+      body: JSON.stringify({ assessment_id: assessmentId, recorded_total: recordedTotal, script_id: scriptId })
     });
     return response.json();
   },
 
   // Restores the real in-progress evaluation (marks + recorded total) for an assessment.
-  async getSessionEvaluation(assessmentId) {
-    const response = await fetch(`${API_BASE_URL}/evaluation/session?assessment_id=${assessmentId}`);
+  async getSessionEvaluation(assessmentId, scriptId = "SESSION-CANDIDATE") {
+    const response = await fetch(`${API_BASE_URL}/evaluation/session?assessment_id=${assessmentId}&script_id=${scriptId}`);
     return response.json();
   },
 

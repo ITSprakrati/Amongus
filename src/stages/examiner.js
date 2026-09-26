@@ -41,13 +41,26 @@ async function renderRealExaminer(container, state) {
   window.EvalOS.state.realSession = window.EvalOS.state.realSession || {};
   window.EvalOS.state.realSession.currentAssessment = assessment;
 
+  // Multi-Copy Bundle Management
+  const scripts = state.realSession?.documents?.answerScripts || [];
+  let activeScriptIndex = window.EvalOS.state.activeScriptIndex || 0;
+  if (activeScriptIndex >= scripts.length) activeScriptIndex = 0;
+  window.EvalOS.state.activeScriptIndex = activeScriptIndex;
+  
+  const activeScript = scripts[activeScriptIndex] || scripts[0];
+  const docId = activeScript?.id || 'SESSION-CANDIDATE';
+
   let session = { marks: {}, recorded_total: null, evaluation_id: null };
   try {
-    session = await window.EvalOS.apiClient.getSessionEvaluation(assessment.id);
+    session = await window.EvalOS.apiClient.getSessionEvaluation(assessment.id, docId);
   } catch (err) {
     console.warn('Could not restore session evaluation, starting fresh', err);
   }
-  window.EvalOS.state.realSession.evaluationId = session.evaluation_id;
+  
+  // Track evaluation ID specific to this script!
+  window.EvalOS.state.realSession.evaluationIds = window.EvalOS.state.realSession.evaluationIds || {};
+  window.EvalOS.state.realSession.evaluationIds[docId] = session.evaluation_id;
+  window.EvalOS.state.realSession.evaluationId = session.evaluation_id; // backward compatibility for verify.js
 
   container.innerHTML = '';
 
@@ -60,11 +73,6 @@ async function renderRealExaminer(container, state) {
   const rightPanel = document.createElement('div');
   rightPanel.className = 'w-full md:w-[38%] h-1/2 md:h-full glass-panel border-t md:border-t-0 md:border-l border-ink/10 flex flex-col pointer-events-auto p-6 overflow-y-auto bg-ivory/90 backdrop-blur-md text-ink font-sans shrink-0';
 
-  // Multi-Copy Bundle Management (e.g. 5 uploaded copies of CBSE exam)
-  const scripts = state.realSession?.documents?.answerScripts || [];
-  let activeScriptIndex = window.EvalOS.state.activeScriptIndex || 0;
-  if (activeScriptIndex >= scripts.length) activeScriptIndex = 0;
-  window.EvalOS.state.activeScriptIndex = activeScriptIndex;
 
   // Generate or retrieve stable blind-marking candidate token
   const anonToken = window.EvalOS.state.realSession?.anonToken || `ANON-${Math.floor(1000 + Math.random() * 9000)}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`;
@@ -125,8 +133,7 @@ async function renderRealExaminer(container, state) {
     : 'HIGH MATCH (88.4%)';
 
   let candidateAnswer = 'Extracted text not available for this preview.';
-  const activeScript = scripts[activeScriptIndex] || scripts[0];
-  const docId = activeScript?.id;
+  // activeScript and docId are already defined at the top of the function
   if (docId) {
     try {
       const resp = await fetch(`${window.EvalOS.API_BASE_URL}/documents/status/${docId}`);
@@ -333,9 +340,10 @@ async function renderRealExaminer(container, state) {
       e.currentTarget.classList.add('bg-ink', 'text-ivory', 'border-ink');
 
       try {
-        const result = await window.EvalOS.apiClient.submitQuestionMark(assessment.id, questionId, markVal);
+        const result = await window.EvalOS.apiClient.submitQuestionMark(assessment.id, questionId, markVal, docId);
         session.marks = result.marks;
         session.recorded_total = result.recorded_total;
+        window.EvalOS.state.realSession.evaluationIds[docId] = result.evaluation_id;
         window.EvalOS.state.realSession.evaluationId = result.evaluation_id;
       } catch (err) {
         console.error('Failed to persist mark', err);
@@ -379,8 +387,9 @@ async function renderRealExaminer(container, state) {
     const val = parseInt(recordedTotalInput.value);
     if (isNaN(val)) return;
     try {
-      const result = await window.EvalOS.apiClient.submitRecordedTotal(assessment.id, val);
+      const result = await window.EvalOS.apiClient.submitRecordedTotal(assessment.id, val, docId);
       session.recorded_total = result.recorded_total;
+      window.EvalOS.state.realSession.evaluationIds[docId] = result.evaluation_id;
       window.EvalOS.state.realSession.evaluationId = result.evaluation_id;
     } catch (err) {
       console.error('Failed to persist recorded total', err);

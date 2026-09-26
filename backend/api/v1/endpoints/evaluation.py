@@ -42,14 +42,16 @@ class QuestionMarkInput(BaseModel):
     assessment_id: UUID
     question_id: UUID
     score: int
+    script_id: Optional[str] = "SESSION-CANDIDATE"
 
 
 class RecordedTotalInput(BaseModel):
     assessment_id: UUID
     recorded_total: int
+    script_id: Optional[str] = "SESSION-CANDIDATE"
 
 
-def _get_or_create_session_evaluation(db: Session, assessment_id: UUID, user_id: Optional[UUID] = None) -> Evaluation:
+def _get_or_create_session_evaluation(db: Session, assessment_id: UUID, user_id: Optional[UUID] = None, script_id: str = "SESSION-CANDIDATE") -> Evaluation:
     """
     Get-or-create the single in-progress Evaluation for this assessment's
     session candidate/answer-script. Binds to the provided user_id to prevent
@@ -73,11 +75,11 @@ def _get_or_create_session_evaluation(db: Session, assessment_id: UUID, user_id:
 
     candidate = (
         db.query(Candidate)
-        .filter(Candidate.assessment_id == assessment_id, Candidate.candidate_identifier == "SESSION-CANDIDATE")
+        .filter(Candidate.assessment_id == assessment_id, Candidate.candidate_identifier == script_id)
         .first()
     )
     if not candidate:
-        candidate = Candidate(assessment_id=assessment_id, candidate_identifier="SESSION-CANDIDATE")
+        candidate = Candidate(assessment_id=assessment_id, candidate_identifier=script_id)
         db.add(candidate)
         db.commit()
         db.refresh(candidate)
@@ -170,7 +172,7 @@ def submit_session_mark(
     Real, incremental mark entry used by the examiner workspace: upserts one
     Mark row per question against a real, persisted Evaluation.
     """
-    evaluation = _get_or_create_session_evaluation(db, payload.assessment_id, user_id=user["user_id"])
+    evaluation = _get_or_create_session_evaluation(db, payload.assessment_id, user_id=user["user_id"], script_id=payload.script_id)
 
     # Validate that question_id actually belongs to this assessment
     from models import Question, QuestionSection
@@ -232,7 +234,7 @@ def submit_recorded_total(
     physical/PDF script as the section/grand total) as a sentinel Mark row
     with question_id = NULL, so verification can compare it against the real
     computed sum of individual question marks."""
-    evaluation = _get_or_create_session_evaluation(db, payload.assessment_id, user_id=user["user_id"])
+    evaluation = _get_or_create_session_evaluation(db, payload.assessment_id, user_id=user["user_id"], script_id=payload.script_id)
 
     sentinel = (
         db.query(Mark)
@@ -263,7 +265,7 @@ def submit_recorded_total(
 
 
 @router.get("/session")
-def get_session_evaluation(assessment_id: UUID, db: Session = Depends(get_db)):
+def get_session_evaluation(assessment_id: UUID, script_id: str = "SESSION-CANDIDATE", db: Session = Depends(get_db)):
     """Real current evaluation state for this assessment's session, used to
     restore the examiner workspace on load. Does not create anything -- an
     evaluation only exists once at least one mark has been entered."""
@@ -274,7 +276,7 @@ def get_session_evaluation(assessment_id: UUID, db: Session = Depends(get_db)):
     answer_script = (
         db.query(AnswerScript)
         .join(Candidate, AnswerScript.candidate_id == Candidate.id)
-        .filter(AnswerScript.assessment_id == assessment_id, Candidate.candidate_identifier == "SESSION-CANDIDATE")
+        .filter(AnswerScript.assessment_id == assessment_id, Candidate.candidate_identifier == script_id)
         .first()
     )
     if not answer_script:

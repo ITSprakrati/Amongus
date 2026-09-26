@@ -39,11 +39,19 @@ export async function renderAnalyticsStage(container, state) {
     const scripts = window.EvalOS.state.realSession?.documents?.answerScripts || [];
     const count = Math.max(scripts.length, defaultProfiles.length);
     bundle = [];
+    const assessmentId = window.EvalOS.state.realSession?.currentAssessment?.id;
     for (let i = 0; i < count; i++) {
       const s = scripts[i];
       const p = defaultProfiles[i % defaultProfiles.length];
       let realScore = p.score;
-      if (i === 0 && window.EvalOS.state.realSession?.recorded_total) {
+      if (s?.id && assessmentId) {
+        try {
+          const ev = await window.EvalOS.apiClient.getSessionEvaluation(assessmentId, s.id);
+          if (ev && ev.recorded_total !== null && ev.recorded_total !== undefined) {
+            realScore = ev.recorded_total;
+          }
+        } catch (err) {}
+      } else if (i === 0 && window.EvalOS.state.realSession?.recorded_total) {
         realScore = window.EvalOS.state.realSession.recorded_total;
       }
       const realPct = Math.round((realScore / p.max) * 100);

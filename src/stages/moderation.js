@@ -24,7 +24,7 @@ export function renderModerationStage(container, state) {
 
   const primarySignal = signals[0];
   const evalId = state.mode === 'real'
-    ? (window.EvalOS.state.realSession?.evaluationId || 'unknown')
+    ? (primarySignal.evaluation_id || window.EvalOS.state.realSession?.evaluationId || 'unknown')
     : (state.realSession?.documents?.answerScripts?.[0]?.id || "eval-000");
 
   container.innerHTML = `

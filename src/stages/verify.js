@@ -11,13 +11,28 @@ export async function renderVerifyStage(container, state) {
   try {
     let evalId;
     if (state.mode === 'real') {
-      // The real evaluation id now comes from the backend (assigned when the
-      // examiner's first mark was persisted) -- see stages/examiner.js.
-      evalId = window.EvalOS.state.realSession?.evaluationId;
-      if (!evalId) {
+      const evalIdsObj = window.EvalOS.state.realSession?.evaluationIds || {};
+      const evalIds = Object.values(evalIdsObj);
+      
+      // Fallback if no evaluationIds dict but legacy evaluationId exists
+      const fallbackEvalId = window.EvalOS.state.realSession?.evaluationId;
+      if (evalIds.length === 0 && fallbackEvalId) evalIds.push(fallbackEvalId);
+      
+      if (evalIds.length === 0) {
         result = { status: 'REVIEW_REQUIRED', signals: [{ type: 'NO_EVALUATION', message: 'No marks have been entered yet.' }], case_id: null };
       } else {
-        result = await window.EvalOS.apiClient.verifyEvaluation(evalId);
+        // Verify all evaluations for the bundle, aggregate signals
+        result = { status: 'OK', signals: [] };
+        for (const eId of evalIds) {
+          const res = await window.EvalOS.apiClient.verifyEvaluation(eId);
+          if (res.status === 'REVIEW_REQUIRED') {
+            result.status = 'REVIEW_REQUIRED';
+            // Attach evaluation ID to signals to track which script failed
+            const signals = (res.signals || []).map(s => ({ ...s, evaluation_id: eId }));
+            result.signals.push(...signals);
+            if (!result.case_id) result.case_id = res.case_id; // track first case
+          }
+        }
       }
     } else {
       const evalId = state.realSession?.documents?.answerScripts?.[0]?.id || 'eval-123';

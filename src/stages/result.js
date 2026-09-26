@@ -30,13 +30,24 @@ export async function renderResultStage(container, state) {
   // Build bundle registry
   const bundleList = [];
   const count = Math.max(scripts.length, defaultProfiles.length);
+  const assessmentId = window.EvalOS.state.realSession?.currentAssessment?.id;
+  
   for (let i = 0; i < count; i++) {
     const s = scripts[i];
     const profile = defaultProfiles[i % defaultProfiles.length];
     
-    // Check if session has real marks for this specific student index
+    // Fetch actual real marks for this specific student from backend
     let realScore = profile.score;
-    if (i === 0 && window.EvalOS.state.realSession?.recorded_total) {
+    if (s?.id && assessmentId) {
+      try {
+        const ev = await window.EvalOS.apiClient.getSessionEvaluation(assessmentId, s.id);
+        if (ev && ev.recorded_total !== null && ev.recorded_total !== undefined) {
+          realScore = ev.recorded_total;
+        }
+      } catch (err) {
+        // fallback to profile score if not evaluated
+      }
+    } else if (i === 0 && window.EvalOS.state.realSession?.recorded_total) {
       realScore = window.EvalOS.state.realSession.recorded_total;
     }
     const realPct = Math.round((realScore / profile.max) * 100);
