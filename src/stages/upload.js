@@ -130,10 +130,11 @@ export function renderUploadStage(container, state) {
 
   function checkAllUploaded() {
     const docs = window.EvalOS.state.realSession.documents;
-    // Allow advancing if ANY document is present for testing the document engine
-    const anyUploaded = docs.answerScripts.length > 0 || docs.markingScheme || docs.assessmentStructure;
+    // Require at least one Answer Script to initialize the pipeline
+    // Question Paper and Marking Scheme are optional but recommended.
+    const canAdvance = docs.answerScripts && docs.answerScripts.length > 0;
     
-    if (anyUploaded) {
+    if (canAdvance) {
       initBtn.disabled = false;
       gsap.to(initBtn, { scale: 1.05, duration: 0.2, yoyo: true, repeat: 1 });
     } else {

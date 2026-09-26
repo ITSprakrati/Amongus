@@ -11,13 +11,18 @@ export async function renderCategoriseStage(container, state) {
   const scripts = state.realSession?.documents?.answerScripts || [];
   
   if (scripts.length === 0) {
-    // Demo mode fallback
-    results = [
-      { category: "HIGH MATCH", confidence: 0.95, message: "Clear matches" },
-      { category: "HIGH MATCH", confidence: 0.91, message: "Clear matches" },
-      { category: "PARTIAL MATCH", confidence: 0.75, message: "Some ambiguity" },
-      { category: "REVIEW REQUIRED", confidence: 0.45, message: "Manual check" }
-    ];
+    if (state.mode === 'real') {
+      // Honest behavior: no answer scripts were uploaded, so we have 0 results.
+      results = [];
+    } else {
+      // Demo mode fallback
+      results = [
+        { category: "HIGH MATCH", confidence: 0.95, message: "Clear matches" },
+        { category: "HIGH MATCH", confidence: 0.91, message: "Clear matches" },
+        { category: "PARTIAL MATCH", confidence: 0.75, message: "Some ambiguity" },
+        { category: "REVIEW REQUIRED", confidence: 0.45, message: "Manual check" }
+      ];
+    }
   } else {
     for (const script of scripts) {
       try {
